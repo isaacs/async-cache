@@ -1,6 +1,6 @@
 {
   "name": "async-cache",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Cache your async lookups and don't fetch the same thing more than necessary.",
   "main": "ac.js",
   "directories": {
