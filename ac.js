@@ -54,3 +54,11 @@ AsyncCache.prototype.set = function(key, val) {
 AsyncCache.prototype.reset = function() {
   return this._cache.reset();
 };
+
+AsyncCache.prototype.has = function(key) {
+  return this._cache.get(key);
+};
+
+AsyncCache.prototype.del = function(key) {
+  return this._cache.del(key);
+};
