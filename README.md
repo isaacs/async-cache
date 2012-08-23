@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/isaacs/async-cache.png)](http://travis-ci.org/isaacs/async-cache)
 # async-cache
 
 Cache your async lookups and don't fetch the same thing more than
