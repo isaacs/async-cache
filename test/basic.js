@@ -62,3 +62,32 @@ test('basic', function(t) {
     });
   }
 });
+
+test('allow stale', function(t) {
+  var v = 0;
+  var ac = new AC({
+    max: 1,
+    load: function(key, cb) {
+      setTimeout(function() {
+        cb(null, v++);
+      }, 100);
+    },
+    maxAge: 10,
+    stale: true
+  });
+
+  ac.get('foo', function(er, val) {
+    console.error('result', er, val);
+    t.equal(val, 0);
+    var start = Date.now();
+    setTimeout(function() {
+      ac.get('foo', function(er, val) {
+        console.error('result2', er, val);
+        var end = Date.now();
+        t.equal(val, 0);
+        t.ok(end - start < 50, 'should be stale');
+        t.end();
+      });
+    }, 15);
+  });
+});
