@@ -1,6 +1,8 @@
 module.exports = AsyncCache;
 
 var LRU = require('lru-cache');
+var EventEmitter = require('events').EventEmitter;
+var inherits = require('util').inherits;
 
 function AsyncCache(opt) {
   if (!opt || typeof opt !== 'object')
@@ -12,12 +14,16 @@ function AsyncCache(opt) {
   if (!(this instanceof AsyncCache))
     return new AsyncCache(opt);
 
+  EventEmitter.call(this);
+
   this._opt = opt;
   this._cache = new LRU(opt);
   this._load = opt.load;
   this._loading = {};
   this._allowStale = opt.stale;
 }
+
+inherits(AsyncCache, EventEmitter);
 
 AsyncCache.prototype.get = function(key, cb) {
   if (this._loading[key])
