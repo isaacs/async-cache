@@ -67,3 +67,7 @@ AsyncCache.prototype.has = function(key) {
 AsyncCache.prototype.del = function(key) {
   return this._cache.del(key);
 };
+
+AsyncCache.prototype.itemCount = function() {
+  return this._cache.itemCount;
+};
