@@ -19,6 +19,14 @@ function AsyncCache(opt) {
   this._allowStale = opt.stale;
 }
 
+Object.defineProperty(AsyncCache.prototype, 'itemCount', {
+  get: function() {
+    return this._cache.itemCount;
+  },
+  enumerable: true,
+  configurable: true
+});
+
 AsyncCache.prototype.get = function(key, cb) {
   if (this._loading[key])
     return this._loading[key].push(cb);

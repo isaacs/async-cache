@@ -14,9 +14,11 @@ test('basic', function(t) {
   var stFirst = null;
   var stSecond = null;
 
+  t.equal(ac.itemCount, 0);
   ac.get(__filename, afterFirst);
   function afterFirst(er, st) {
     if (er) throw er;
+    t.equal(ac.itemCount, 1);
     called ++;
     stFirst = st;
     t.pass('called the first one');
@@ -30,6 +32,7 @@ test('basic', function(t) {
   ac.get(__filename, afterSecond);
   function afterSecond(er, st) {
     if (er) throw er;
+    t.equal(ac.itemCount, 1);
     called ++;
     stSecond = st;
     t.pass('called the second one');
@@ -40,6 +43,7 @@ test('basic', function(t) {
   t.deepEqual(ac._loading, expectLoading);
 
   function next() {
+    t.equal(ac.itemCount, 1);
     t.equal(stFirst, stSecond, 'should be same stat object');
     t.deepEqual(ac._loading, {});
     t.equal(called, 2);
@@ -54,8 +58,10 @@ test('basic', function(t) {
     // now make it fall out of cache by fetching a new one.
     ac.get(__dirname, function(er, st) {
       if (er) throw er;
+      t.equal(ac.itemCount, 1);
       ac.get(__filename, function(er, st) {
         if (er) throw er;
+        t.equal(ac.itemCount, 1);
         t.notEqual(st, stFirst, 'should have re-fetched');
         t.end();
       });
@@ -76,7 +82,9 @@ test('allow stale', function(t) {
     stale: true
   });
 
+  t.equal(ac.itemCount, 0);
   ac.get('foo', function(er, val) {
+    t.equal(ac.itemCount, 1);
     console.error('result', er, val);
     t.equal(val, 0);
     var start = Date.now();
