@@ -7,7 +7,7 @@
     "test": "test"
   },
   "dependencies": {
-    "lru-cache": "~2.2"
+    "lru-cache": "~2.3"
   },
   "devDependencies": {
     "tap": "~0.3.0"
