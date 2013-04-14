@@ -41,10 +41,12 @@ test('basic', function(t) {
 
   expectLoading[__filename].push(afterSecond);
   t.deepEqual(ac._loading, expectLoading);
+  t.type(ac.peek(__filename), 'undefined');
 
   function next() {
     t.equal(ac.itemCount, 1);
     t.equal(stFirst, stSecond, 'should be same stat object');
+    t.equal(stFirst, ac.peek(__filename), 'should be same stat object');
     t.deepEqual(ac._loading, {});
     t.equal(called, 2);
     ac.get(__filename, function(er, st) {
@@ -58,6 +60,7 @@ test('basic', function(t) {
     // now make it fall out of cache by fetching a new one.
     ac.get(__dirname, function(er, st) {
       if (er) throw er;
+      t.type(ac.peek(__filename), 'undefined');
       t.equal(ac.itemCount, 1);
       ac.get(__filename, function(er, st) {
         if (er) throw er;
