@@ -75,3 +75,7 @@ AsyncCache.prototype.has = function(key) {
 AsyncCache.prototype.del = function(key) {
   return this._cache.del(key);
 };
+
+AsyncCache.prototype.peek = function(key) {
+  return this._cache.peek(key);
+};
