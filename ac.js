@@ -34,12 +34,12 @@ AsyncCache.prototype.get = function(key, cb) {
   var has = this._cache.has(key);
   var cached = this._cache.get(key);
   if (has && void 0 !== cached)
-    return process.nextTick(function() {
+    return setImmediate(function() {
       cb(null, cached);
     });
 
   if (void 0 !== cached && this._allowStale && !has)
-    process.nextTick(function() {
+    setImmediate(function() {
       cb(null, cached);
     });
   else
