@@ -27,6 +27,10 @@ Object.defineProperty(AsyncCache.prototype, 'itemCount', {
   configurable: true
 });
 
+AsyncCache.prototype.keys = function () {
+    return this._cache.keys();
+};
+
 AsyncCache.prototype.get = function(key, cb) {
   if (this._loading[key])
     return this._loading[key].push(cb);
