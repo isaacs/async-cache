@@ -145,3 +145,26 @@ test('return stale while updating', function (t) {
     setTimeout(step, 100 * i)
   }
 })
+
+test('keys', function (t) {
+  var ac = new AC({
+    max: 10,
+    load: function (key, cb) {
+      cb({ msg: 'item not in cache' })
+    },
+    maxAge: 10,
+    stale: true
+  })
+
+  t.equal(ac.itemCount, 0)
+
+  ac.set('foo1', 'bar1')
+  ac.set('foo2', 'bar2')
+
+  var keys = ac.keys()
+
+  t.ok(keys.indexOf('foo1') !== -1)
+  t.ok(keys.indexOf('foo2') !== -1)
+
+  t.end()
+})

@@ -81,6 +81,10 @@ AsyncCache.prototype.get = function (key, cb) {
   }.bind(this))
 }
 
+AsyncCache.prototype.keys = function () {
+  return this._cache.keys()
+}
+
 AsyncCache.prototype.set = function (key, val) {
   return this._cache.set(key, val)
 }
