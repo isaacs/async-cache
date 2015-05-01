@@ -16,6 +16,7 @@ function AsyncCache(opt) {
   this._cache = new LRU(opt);
   this._load = opt.load;
   this._loading = {};
+  this._stales = {};
   this._allowStale = opt.stale;
 }
 
@@ -28,26 +29,38 @@ Object.defineProperty(AsyncCache.prototype, 'itemCount', {
 });
 
 AsyncCache.prototype.get = function(key, cb) {
+  var stale = this._stales[key];
+  if (this._allowStale && stale !== undefined) {
+    return process.nextTick(function() {
+      cb(null, stale);
+    });
+  }
+
   if (this._loading[key])
     return this._loading[key].push(cb);
 
   var has = this._cache.has(key);
   var cached = this._cache.get(key);
-  if (has && void 0 !== cached)
+  if (has && undefined !== cached)
     return process.nextTick(function() {
       cb(null, cached);
     });
 
-  if (void 0 !== cached && this._allowStale && !has)
+  if (undefined !== cached && this._allowStale && !has) {
+    this._stales[key] = cached;
     process.nextTick(function() {
       cb(null, cached);
     });
+  }
   else
     this._loading[key] = [ cb ];
 
   this._load(key, function(er, res) {
     if (!er)
       this._cache.set(key, res);
+
+    if (this._allowStale)
+      delete this._stales[key];
 
     var cbs = this._loading[key];
     if (!cbs)
