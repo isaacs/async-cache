@@ -18,6 +18,13 @@ var stats = new AsyncCache({
   // options passed directly to the internal lru cache
   max: 1000,
   maxAge: 1000 * 60 * 10,
+  // indicate to lru to return stale 
+  // (required true for returnStaleWhileUpdating)
+  stale: false,
+  // indicate to return immediately (on next tick) the last stale value
+  // and not ~block~ (wait) while executing the update function. This option 
+  // requires stale:true, otherwise it will not have effect. 
+  returnStaleWhileUpdating: false,
   // method to load a thing if it's not in the cache.
   // key must be unique in the context of this cache.
   load: function (key, cb) {
