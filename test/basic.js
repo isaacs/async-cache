@@ -102,3 +102,72 @@ test('allow stale', function(t) {
     }, 15);
   });
 });
+
+
+test('return stale while updating', function(t){
+
+  var isLoading = false;
+  var start = Date.now();
+  var maxAge = 500;
+  var loadingTimes = 0;
+
+  var ac = new AC({
+      max: 1000,
+      stale: true,
+      returnStaleWhileUpdating: true,
+      maxAge: maxAge,
+      load: function(key, cb) {
+        isLoading = true;
+        loadingTimes++;
+        setTimeout(function(){
+          isLoading = false;
+          cb(null, { created: Date.now(), version: loadingTimes });
+        },450);
+      }
+    });
+
+  var times = 0;
+  var staleTimes = 0;
+  var responses = 0;
+
+  function step(){
+
+    var reqTime = Date.now();
+
+    ac.get('someKey',
+      function (err, item){
+        var resTime = Date.now();
+        if(err){
+          console.log('error', err);
+        }else{
+          var itemAge = resTime- item.created;
+          if(itemAge>maxAge) staleTimes++;
+          ++responses;
+
+          console.log(
+            responses,
+            "ReqTime: ", reqTime - start,
+            "ResTime: ", resTime - start,
+            "(" + (resTime - reqTime) + ")",
+            "Is Loading", isLoading,
+            'Item Age: ', itemAge,
+            "Ver:", item.version)
+
+          if(responses == 30){
+            t.equal(staleTimes, 10, "10 stale times")
+            t.equal(loadingTimes, 3, "3 loading times")
+            t.end();
+          }
+
+        }
+      });
+  }
+
+  var i;
+  for(i=0;i<30;i++){
+    setTimeout(function(){
+      step();
+    },100 * i);
+  }
+
+})
