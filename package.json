@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "standard": "^3.11.0",
-    "tap": "^1.1.0"
+    "tap": "^2.0.0"
   },
   "scripts": {
     "test": "standard && tap test/*.js --cov"
