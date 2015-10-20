@@ -2,6 +2,29 @@ var test = require('tap').test
 var AC = require('../ac.js')
 var fs = require('fs')
 
+test('options check', function (t) {
+  var types = ['string', 123, true, new RegExp('boom', 'g'), undefined, null]
+
+  types.forEach(function (val, key) {
+    t.throws(function () {
+      var ac = new AC()
+      t.equal(ac, undefined)
+    }, 'options must be an object')
+  })
+
+  t.throws(function () {
+    var ac = new AC({ noload: function () {} })
+    t.equal(ac, undefined)
+  }, 'throws since parameter is an object without a .load property')
+
+  t.doesNotThrow(function () {
+    var ac = new AC({ load: function () {} })
+    t.type(ac, 'object')
+  }, 'does not throw since parameter has a .load property')
+
+  t.end()
+})
+
 test('basic', function (t) {
   var ac = new AC({
     max: 1,
