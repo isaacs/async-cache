@@ -6,6 +6,9 @@
   "directories": {
     "test": "test"
   },
+  "files": [
+    "ac.js"
+  ],
   "dependencies": {
     "lru-cache": "^4.0.0"
   },
