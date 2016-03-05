@@ -60,9 +60,9 @@ AsyncCache.prototype.get = function (key, cb) {
     this._loading[key] = [ cb ]
   }
 
-  this._load(key, function (er, res) {
+  this._load(key, function (er, res, maxAge) {
     if (!er) {
-      this._cache.set(key, res)
+      this._cache.set(key, res, maxAge)
     }
 
     if (this._allowStale) {
@@ -81,8 +81,8 @@ AsyncCache.prototype.get = function (key, cb) {
   }.bind(this))
 }
 
-AsyncCache.prototype.set = function (key, val) {
-  return this._cache.set(key, val)
+AsyncCache.prototype.set = function (key, val, maxAge) {
+  return this._cache.set(key, val, maxAge)
 }
 
 AsyncCache.prototype.reset = function () {

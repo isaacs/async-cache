@@ -145,3 +145,44 @@ test('return stale while updating', function (t) {
     setTimeout(step, 100 * i)
   }
 })
+
+test('per item maxAge', function (t) {
+  var counter = 0
+  var ac = new AC({
+    load: function (n, cb) {
+      ++counter
+      setTimeout(function () {
+        // max age set to 500
+        cb(null, 'value', 250)
+      }, 0)
+    }
+  })
+
+  function afterFirst (err, item) {
+    if (err) throw err
+    t.equal(item, 'value')
+    t.equal(counter, 1, 'load called 1 time')
+
+    ac.get('key', afterSecond)
+  }
+
+  function afterSecond (err, item) {
+    if (err) throw err
+    t.equal(item, 'value')
+    t.equal(counter, 1, 'load still called 1 time')
+
+    setTimeout(function () {
+      ac.get('key', afterThird)
+    }, 260) // wait longer then maxAge
+  }
+
+  function afterThird (err, item) {
+    if (err) throw err
+    t.equal(item, 'value')
+    t.equal(counter, 2, 'load called twice since maxAge elapsed')
+
+    t.end()
+  }
+
+  ac.get('key', afterFirst)
+})
