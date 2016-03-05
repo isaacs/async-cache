@@ -50,6 +50,20 @@ key for you.
 Keys must uniquely identify a single object, and must contain all the
 information required to fetch an object, and must be strings.
 
+### Per key `maxAge`
+
+If `load` callback is called with 3 arguments, the 3rd is passed to
+the internal [lru-cache](http://npm.im/lru-cache) as a `maxAge` for
+the retrieved key.
+
+```javascript
+  function load (key, cb) {
+    getValueFromTheKey(key, function (err, item) {
+      cb(err, item.value, item.maxAge)
+    })
+  }
+```
+
 ## Methods
 
 * `get(key, cb)` If the key is in the cache, then calls `cb(null,
@@ -58,7 +72,8 @@ information required to fetch an object, and must be strings.
   cache the result.  Multiple `get` calls with the same key will only
   ever have a single `load` call at the same time.
 
-* `set(key, val)` Seed the cache.  This doesn't have to be done, but
+* `set(key, val, maxAge)` Seed the cache.  This doesn't have to be done, but
   can be convenient if you know that something will be fetched soon.
+  `maxAge` is optional - it is passed to internal LRU cache
 
 * `reset()` Drop all the items in the cache.
