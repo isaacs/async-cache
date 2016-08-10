@@ -13,7 +13,7 @@
     "lru-cache": "^4.0.0"
   },
   "devDependencies": {
-    "standard": "^3.11.0",
+    "standard": "^7.1.2",
     "tap": "^2.0.0"
   },
   "scripts": {
