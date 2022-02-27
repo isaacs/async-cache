@@ -18,7 +18,7 @@ test('options check', function (t) {
   }, 'throws since parameter is an object without a .load property')
 
   t.doesNotThrow(function () {
-    var ac = new AC({ load: function () {} })
+    var ac = AC({ load: function () {} })
     t.type(ac, 'object')
   }, 'does not throw since parameter has a .load property')
 
@@ -50,7 +50,7 @@ test('basic', function (t) {
 
   var expectLoading = {}
   expectLoading[__filename] = [afterFirst]
-  t.deepEqual(ac._loading, expectLoading)
+  t.same(ac._loading, expectLoading)
 
   ac.get(__filename, afterSecond)
   function afterSecond (er, st) {
@@ -63,14 +63,14 @@ test('basic', function (t) {
   }
 
   expectLoading[__filename].push(afterSecond)
-  t.deepEqual(ac._loading, expectLoading)
+  t.same(ac._loading, expectLoading)
   t.type(ac.peek(__filename), 'undefined')
 
   function next () {
     t.equal(ac.itemCount, 1)
     t.equal(stFirst, stSecond, 'should be same stat object')
     t.equal(stFirst, ac.peek(__filename), 'should be same stat object')
-    t.deepEqual(ac._loading, {})
+    t.same(ac._loading, {})
     t.equal(called, 2)
     ac.get(__filename, function (er, st) {
       if (er) throw er
@@ -88,7 +88,14 @@ test('basic', function (t) {
       ac.get(__filename, function (er, st) {
         if (er) throw er
         t.equal(ac.itemCount, 1)
-        t.notEqual(st, stFirst, 'should have re-fetched')
+        t.equal(ac.has(__filename), true)
+        t.not(st, stFirst, 'should have re-fetched')
+        ac.del(__filename)
+        t.equal(ac.itemCount, 0)
+        ac.set('foo', 'bar')
+        t.equal(ac.itemCount, 1)
+        ac.reset()
+        t.equal(ac.itemCount, 0)
         t.end()
       })
     })
@@ -231,4 +238,16 @@ test('per item maxAge', function (t) {
   }
 
   ac.get('key', afterFirst)
+})
+
+test('load error', function (t) {
+  var ac = new AC({
+    load: function (key, cb) {
+      cb(new Error('oops'))
+    },
+  })
+  ac.get('key', function (er, value) {
+    t.match(er, new Error('oops'))
+    t.end()
+  })
 })

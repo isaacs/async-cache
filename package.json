@@ -13,11 +13,10 @@
     "lru-cache": "^4.0.0"
   },
   "devDependencies": {
-    "standard": "^3.11.0",
-    "tap": "^2.0.0"
+    "tap": "^15.1.6"
   },
   "scripts": {
-    "test": "standard && tap test/*.js --cov"
+    "test": "tap"
   },
   "repository": {
     "type": "git",
